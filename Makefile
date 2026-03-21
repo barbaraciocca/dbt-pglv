@@ -1,8 +1,11 @@
 .PHONY: help setup db-start db-setup run test docs clean all
 
+include .env
+export
+
 help:
 	@echo "Comandos disponíveis:"
-	@echo "  make setup      - Instala dependências"
+	@echo "  make setup      - Instala dependências e configura credenciais"
 	@echo "  make db-start   - Inicia o PostgreSQL"
 	@echo "  make db-setup   - Cria as tabelas raw no banco"
 	@echo "  make run        - Roda todos os modelos dbt"
@@ -14,14 +17,28 @@ help:
 setup:
 	pip install dbt-postgres
 	@echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.bashrc
-	@echo "✓ dbt instalado"
+	@source ~/.bashrc
+	@mkdir -p ~/.dbt
+	@echo "marketing_case:" > ~/.dbt/profiles.yml
+	@echo "  target: dev" >> ~/.dbt/profiles.yml
+	@echo "  outputs:" >> ~/.dbt/profiles.yml
+	@echo "    dev:" >> ~/.dbt/profiles.yml
+	@echo "      type: postgres" >> ~/.dbt/profiles.yml
+	@echo "      host: $(DBT_HOST)" >> ~/.dbt/profiles.yml
+	@echo "      port: $(DBT_PORT)" >> ~/.dbt/profiles.yml
+	@echo "      user: $(DBT_USER)" >> ~/.dbt/profiles.yml
+	@echo "      password: $(DBT_PASSWORD)" >> ~/.dbt/profiles.yml
+	@echo "      dbname: $(DBT_DATABASE)" >> ~/.dbt/profiles.yml
+	@echo "      schema: $(DBT_SCHEMA)" >> ~/.dbt/profiles.yml
+	@echo "      threads: 1" >> ~/.dbt/profiles.yml
+	@echo "✓ dbt instalado e profiles.yml configurado"
 
 db-start:
 	sudo service postgresql start
 	@echo "✓ PostgreSQL iniciado"
 
 db-setup:
-	sudo -u postgres psql -d postgres -c "ALTER USER postgres PASSWORD 'postgres123';"
+	sudo -u postgres psql -d postgres -c "ALTER USER postgres PASSWORD '$(DBT_PASSWORD)';"
 	sudo -u postgres psql -d postgres -f scripts/create_raw_tables.sql
 	@echo "✓ Tabelas raw criadas"
 
