@@ -25,7 +25,10 @@ help:
 	@echo ""
 	@echo "👉 Abra o arquivo .env e preencha suas credenciais:"
 	@echo ""
-	@echo "💡 Dica: em DBT_PASSWORD coloque qualquer senha de sua escolha."
+	@echo "💡 Dicas:"
+	@echo "   - Em DBT_PASSWORD coloque qualquer senha de sua escolha."
+	@echo "   - No Mac, DBT_USER deve ser o seu usuário do sistema (rode: whoami)"
+	@echo "   - No Linux, DBT_USER geralmente é postgres"
 	@echo "   O Makefile vai configurar o PostgreSQL com essa mesma senha"
 	@echo "   automaticamente — você não precisa fazer nada além disso."
 	@echo ""
@@ -48,7 +51,11 @@ setup: .env venv
 	@echo "      type: postgres" >> ~/.dbt/profiles.yml
 	@echo "      host: $(DBT_HOST)" >> ~/.dbt/profiles.yml
 	@echo "      port: $(DBT_PORT)" >> ~/.dbt/profiles.yml
-	@echo "      user: $(DBT_USER)" >> ~/.dbt/profiles.yml
+	@if [ "$$(uname)" = "Darwin" ]; then \
+			echo "      user: $$(whoami)" >> ~/.dbt/profiles.yml; \
+		else \
+			echo "      user: $(DBT_USER)" >> ~/.dbt/profiles.yml; \
+		fi
 	@echo "      password: $(DBT_PASSWORD)" >> ~/.dbt/profiles.yml
 	@echo "      dbname: $(DBT_DATABASE)" >> ~/.dbt/profiles.yml
 	@echo "      schema: $(DBT_SCHEMA)" >> ~/.dbt/profiles.yml
