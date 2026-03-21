@@ -5,7 +5,7 @@ ifneq (,$(wildcard .env))
   export
 endif
 
-export PATH := $(HOME)/.local/bin:$(PATH)
+DBT := ./venv/bin/dbt
 
 help:
 	@echo "Comandos disponíveis:"
@@ -32,13 +32,14 @@ help:
 	@echo "Depois rode make all novamente."
 	@exit 1
 
-setup: .env
-	pip install dbt-postgres
-	@if [ "$$(uname)" = "Darwin" ]; then \
-		echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.zshrc; \
-	else \
-		echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.bashrc; \
-	fi
+venv:
+	@echo "Criando ambiente virtual..."
+	@python3 -m venv venv
+	@./venv/bin/pip install --upgrade pip --quiet
+	@./venv/bin/pip install dbt-postgres --quiet
+	@echo "✓ Ambiente virtual criado com dbt instalado"
+
+setup: .env venv
 	@mkdir -p ~/.dbt
 	@echo "marketing_case:" > ~/.dbt/profiles.yml
 	@echo "  target: dev" >> ~/.dbt/profiles.yml
@@ -52,7 +53,7 @@ setup: .env
 	@echo "      dbname: $(DBT_DATABASE)" >> ~/.dbt/profiles.yml
 	@echo "      schema: $(DBT_SCHEMA)" >> ~/.dbt/profiles.yml
 	@echo "      threads: 1" >> ~/.dbt/profiles.yml
-	@echo "✓ dbt instalado e profiles.yml configurado"
+	@echo "✓ profiles.yml configurado"
 
 db-start: .env
 	@if [ "$$(uname)" = "Darwin" ]; then \
@@ -61,7 +62,6 @@ db-start: .env
 			brew install postgresql; \
 		fi; \
 		PG=$$(brew list | grep postgresql | head -1); \
-		echo "Iniciando $$PG..."; \
 		brew services start $$PG; \
 	else \
 		if ! command -v psql > /dev/null 2>&1; then \
@@ -74,28 +74,25 @@ db-start: .env
 
 db-setup: .env
 	@if [ "$$(uname)" = "Darwin" ]; then \
-		psql postgres -c "ALTER USER $$(whoami) PASSWORD '$(DBT_PASSWORD)';" 2>/dev/null || true; \
-	else \
-		sudo -u postgres psql -d postgres -c "ALTER USER postgres PASSWORD '$(DBT_PASSWORD)';"; \
-	fi
-	@if [ "$$(uname)" = "Darwin" ]; then \
 		psql postgres -f scripts/create_raw_tables.sql; \
 	else \
+		sudo -u postgres psql -d postgres -c "ALTER USER postgres PASSWORD '$(DBT_PASSWORD)';"; \
 		sudo -u postgres psql -d postgres -f scripts/create_raw_tables.sql; \
 	fi
 	@echo "✓ Tabelas raw criadas"
 
-run: .env
-	cd marketing_case && dbt run
+run: .env venv
+	cd marketing_case && ../venv/bin/dbt run
 
-test: .env
-	cd marketing_case && dbt test
+test: .env venv
+	cd marketing_case && ../venv/bin/dbt test
 
-docs: .env
-	cd marketing_case && dbt docs generate && dbt docs serve
+docs: .env venv
+	cd marketing_case && ../venv/bin/dbt docs generate && ../venv/bin/dbt docs serve
 
 clean:
 	cd marketing_case && rm -rf target/ logs/
+	rm -rf venv
 
-all: db-start db-setup run test
+all: setup db-start db-setup run test
 	@echo "✓ Projeto completo!"
