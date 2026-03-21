@@ -85,6 +85,18 @@ make all
 This single command will install dbt, start PostgreSQL, create the raw tables with sample data, run all dbt models, and run all 24 tests.
 
 ---
+## Exploring the documentation
+
+dbt generates a complete documentation website with all models, column descriptions, and a lineage graph showing how data flows from raw tables all the way to the final fact and dimension tables.
+
+To open it in your browser:
+```bash
+make docs
+```
+
+Then access `http://localhost:8080` in your browser.
+
+---
 
 ## Available commands
 ```bash
