@@ -77,7 +77,6 @@ nano .env
 | `DBT_DATABASE` | `postgres` | `postgres` |
 | `DBT_SCHEMA` | `public` | `public` |
 
-```
 **3. Run everything**
 ```bash
 make all
