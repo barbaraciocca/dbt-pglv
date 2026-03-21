@@ -21,8 +21,11 @@ help:
 	@cp .env.example .env
 	@echo "✓ Arquivo .env criado a partir do .env.example"
 	@echo ""
-	@echo "👉 Abra o arquivo .env e preencha as credenciais do seu banco:"
-	@echo "   nano .env"
+	@echo "👉 Abra o arquivo .env e preencha suas credenciais:"
+	@echo ""
+	@echo "💡 Dica: em DBT_PASSWORD coloque qualquer senha de sua escolha."
+	@echo "   O Makefile vai configurar o PostgreSQL com essa mesma senha"
+	@echo "   automaticamente — você não precisa fazer nada além disso."
 	@echo ""
 	@echo "Depois rode make all novamente."
 	@exit 1
