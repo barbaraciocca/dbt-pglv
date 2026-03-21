@@ -44,21 +44,54 @@ Extracts fields from the JSON payload, standardizes column names, and casts to t
 
 ---
 
-## How to run
+## Getting Started
 
 ### Prerequisites
 - Python 3.10+
 - PostgreSQL 15
 - dbt-postgres 1.10+
 
-### Commands
+### Setup
+
+**1. Clone the repository**
 ```bash
-make setup      # install dependencies
+git clone https://github.com/barbaraciocca/dbt-pglv.git
+cd dbt-pglv
+```
+
+**2. Configure your credentials**
+
+The first time you run any `make` command, the Makefile will automatically create a `.env` file from `.env.example` and ask you to fill in your database credentials:
+```bash
+nano .env
+```
+```bash
+DBT_HOST=localhost
+DBT_PORT=5432
+DBT_USER=postgres
+DBT_PASSWORD=your_password_here
+DBT_DATABASE=postgres
+DBT_SCHEMA=public
+```
+
+**3. Run everything**
+```bash
+make all
+```
+
+That's it! This single command will start PostgreSQL, create the raw tables with sample data, run all dbt models, and run all tests.
+
+---
+
+## Available commands
+```bash
+make setup      # install dependencies and configure credentials
 make db-start   # start PostgreSQL
 make db-setup   # create raw tables with sample data
 make run        # run all dbt models
 make test       # run all 24 tests
 make docs       # generate and serve documentation in the browser
+make clean      # remove generated files
 make all        # run everything from scratch
 ```
 
@@ -67,10 +100,11 @@ make all        # run everything from scratch
 ## Project structure
 ```
 dbt-pglv/
-├── Makefile
+├── .env.example               ← credentials template
+├── Makefile                   ← automation commands
 ├── README.md
 ├── scripts/
-│   └── create_raw_tables.sql
+│   └── create_raw_tables.sql  ← sample raw data
 └── marketing_case/
     ├── dbt_project.yml
     └── models/
@@ -85,3 +119,7 @@ dbt-pglv/
             ├── dim_date.sql
             └── fct_campaign_performance.sql
 ```
+
+---
+
+> **Note:** Sample data is used to simulate Fivetran ingestion. In a real scenario, these raw tables would be populated automatically by Fivetran.
