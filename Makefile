@@ -5,6 +5,8 @@ ifneq (,$(wildcard .env))
   export
 endif
 
+export PATH := $(HOME)/.local/bin:$(PATH)
+
 help:
 	@echo "Comandos disponíveis:"
 	@echo "  make setup      - Instala dependências e configura credenciais"
