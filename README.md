@@ -1,70 +1,70 @@
 # dbt Marketing Case
 
-Projeto dbt que unifica dados de custo de marketing do **Facebook Ads**, **Google Ads** e **TikTok Ads** a partir de tabelas brutas com payload em JSON, simulando uma ingestão via Fivetran em um Data Warehouse PostgreSQL.
+A dbt project that unifies marketing cost data from **Facebook Ads**, **Google Ads**, and **TikTok Ads** from raw tables with JSON payloads, simulating a Fivetran ingestion pipeline into a PostgreSQL Data Warehouse.
 
 ---
 
-## Arquitetura
+## Architecture
 ```
 Raw (PostgreSQL)
       ↓
-Staging (extração e padronização do JSON)
+Staging (JSON extraction and standardization)
       ↓
-Marts — Modelo Estrela (fct + dims)
+Marts — Star Schema (fact + dimensions)
 ```
 
-### Camada Raw
-Tabelas brutas ingeridas pelo Fivetran. Cada plataforma usa nomes diferentes para os mesmos campos dentro de uma coluna `raw_payload` em formato JSONB.
+### Raw Layer
+Raw tables ingested by Fivetran. Each platform uses different field names for the same concepts inside a `raw_payload` column in JSONB format.
 
-| Plataforma | Campo de custo | Campo de data |
+| Platform | Cost field | Date field |
 |---|---|---|
 | Facebook Ads | `amount_spent` | `spending_date` |
 | Google Ads | `cost` | `date` |
 | TikTok Ads | `spend` | `stat_date` |
 
-### Camada Staging
-Extrai os campos do JSON, padroniza os nomes das colunas e define os tipos corretos. Um modelo por plataforma:
+### Staging Layer
+Extracts fields from the JSON payload, standardizes column names, and casts to the correct data types. One model per platform:
 - `stg_facebook_ads`
 - `stg_google_ads`
 - `stg_tiktok_ads`
 
-### Camada Marts — Modelo Estrela
-- `dim_campaign` — dimensão de campanhas com nome e plataforma
-- `dim_date` — dimensão de datas com ano, mês e dia separados
-- `fct_campaign_performance` — fato com custo, impressões, cliques e custo por clique unificando todas as plataformas
+### Marts Layer — Star Schema
+- `dim_campaign` — campaign dimension with name and source platform
+- `dim_date` — date dimension with year, month, and day
+- `fct_campaign_performance` — fact table with cost, impressions, clicks, and cost-per-click unified across all platforms
 
 ---
 
-## Testes
+## Tests
 
-24 testes automatizados cobrindo:
-- Unicidade (`unique`)
-- Campos obrigatórios (`not_null`)
-- Valores aceitos (`accepted_values`) para a coluna `platform`
+24 automated tests covering:
+- Uniqueness (`unique`)
+- Required fields (`not_null`)
+- Accepted values (`accepted_values`) for the `platform` column
 
 ---
 
-## Como rodar
+## How to run
 
-### Pré-requisitos
+### Prerequisites
 - Python 3.10+
 - PostgreSQL 15
 - dbt-postgres 1.10+
 
-### Comandos
+### Commands
 ```bash
-make setup      # instala dependências
-make db-start   # inicia o PostgreSQL
-make db-setup   # cria as tabelas raw com dados de exemplo
-make run        # roda todos os modelos dbt
-make test       # roda os 24 testes
-make docs       # gera e abre a documentação no browser
-make all        # roda tudo do zero
+make setup      # install dependencies
+make db-start   # start PostgreSQL
+make db-setup   # create raw tables with sample data
+make run        # run all dbt models
+make test       # run all 24 tests
+make docs       # generate and serve documentation in the browser
+make all        # run everything from scratch
 ```
 
 ---
 
-## Estrutura do projeto
+## Project structure
 ```
 dbt-pglv/
 ├── Makefile
