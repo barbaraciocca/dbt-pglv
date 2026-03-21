@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS raw_facebook_ads;
-DROP TABLE IF EXISTS raw_google_ads;
-DROP TABLE IF EXISTS raw_tiktok_ads;
+DROP TABLE IF EXISTS raw_facebook_ads CASCADE;
+DROP TABLE IF EXISTS raw_google_ads CASCADE;
+DROP TABLE IF EXISTS raw_tiktok_ads CASCADE;
 
 CREATE TABLE raw_facebook_ads (
   id SERIAL PRIMARY KEY,

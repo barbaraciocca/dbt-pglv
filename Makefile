@@ -1,7 +1,9 @@
 .PHONY: help setup db-start db-setup run test docs clean all
 
-include .env
-export
+ifneq (,$(wildcard .env))
+  include .env
+  export
+endif
 
 help:
 	@echo "Comandos disponíveis:"
@@ -14,7 +16,18 @@ help:
 	@echo "  make clean      - Remove arquivos gerados"
 	@echo "  make all        - Roda tudo do zero"
 
-setup:
+.env:
+	@echo "⚠️  Arquivo .env não encontrado!"
+	@cp .env.example .env
+	@echo "✓ Arquivo .env criado a partir do .env.example"
+	@echo ""
+	@echo "👉 Abra o arquivo .env e preencha as credenciais do seu banco:"
+	@echo "   nano .env"
+	@echo ""
+	@echo "Depois rode make all novamente."
+	@exit 1
+
+setup: .env
 	pip install dbt-postgres
 	@echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.bashrc
 	@source ~/.bashrc
@@ -33,26 +46,26 @@ setup:
 	@echo "      threads: 1" >> ~/.dbt/profiles.yml
 	@echo "✓ dbt instalado e profiles.yml configurado"
 
-db-start:
+db-start: .env
 	sudo service postgresql start
 	@echo "✓ PostgreSQL iniciado"
 
-db-setup:
+db-setup: .env
 	sudo -u postgres psql -d postgres -c "ALTER USER postgres PASSWORD '$(DBT_PASSWORD)';"
 	sudo -u postgres psql -d postgres -f scripts/create_raw_tables.sql
 	@echo "✓ Tabelas raw criadas"
 
-run:
+run: .env
 	cd marketing_case && dbt run
 
-test:
+test: .env
 	cd marketing_case && dbt test
 
-docs:
+docs: .env
 	cd marketing_case && dbt docs generate && dbt docs serve
 
 clean:
 	cd marketing_case && rm -rf target/ logs/
 
-all: db-start db-setup run test
+all: .env db-start db-setup run test
 	@echo "✓ Projeto completo!"
