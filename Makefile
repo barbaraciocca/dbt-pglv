@@ -32,8 +32,7 @@ help:
 
 setup: .env
 	pip install dbt-postgres
-	@if [ "$(shell uname)" = "Darwin" ]; then \
-		which brew > /dev/null 2>&1 || { echo "❌ Homebrew não encontrado. Instale em https://brew.sh"; exit 1; }; \
+	@if [ "$$(uname)" = "Darwin" ]; then \
 		echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.zshrc; \
 	else \
 		echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.bashrc; \
@@ -54,16 +53,34 @@ setup: .env
 	@echo "✓ dbt instalado e profiles.yml configurado"
 
 db-start: .env
-	@if [ "$(shell uname)" = "Darwin" ]; then \
-		brew services start postgresql@15 || brew services start postgresql; \
+	@if [ "$$(uname)" = "Darwin" ]; then \
+		if ! command -v psql > /dev/null 2>&1; then \
+			echo "PostgreSQL não encontrado. Instalando via Homebrew..."; \
+			brew install postgresql; \
+		fi; \
+		PG=$$(brew list | grep postgresql | head -1); \
+		echo "Iniciando $$PG..."; \
+		brew services start $$PG; \
 	else \
+		if ! command -v psql > /dev/null 2>&1; then \
+			echo "PostgreSQL não encontrado. Instalando..."; \
+			sudo apt-get update && sudo apt-get install -y postgresql postgresql-client; \
+		fi; \
 		sudo service postgresql start; \
 	fi
 	@echo "✓ PostgreSQL iniciado"
 
 db-setup: .env
-	sudo -u postgres psql -d postgres -c "ALTER USER postgres PASSWORD '$(DBT_PASSWORD)';"
-	sudo -u postgres psql -d postgres -f scripts/create_raw_tables.sql
+	@if [ "$$(uname)" = "Darwin" ]; then \
+		psql postgres -c "ALTER USER $$(whoami) PASSWORD '$(DBT_PASSWORD)';" 2>/dev/null || true; \
+	else \
+		sudo -u postgres psql -d postgres -c "ALTER USER postgres PASSWORD '$(DBT_PASSWORD)';"; \
+	fi
+	@if [ "$$(uname)" = "Darwin" ]; then \
+		psql postgres -f scripts/create_raw_tables.sql; \
+	else \
+		sudo -u postgres psql -d postgres -f scripts/create_raw_tables.sql; \
+	fi
 	@echo "✓ Tabelas raw criadas"
 
 run: .env
@@ -78,5 +95,5 @@ docs: .env
 clean:
 	cd marketing_case && rm -rf target/ logs/
 
-all: .env db-start db-setup run test
+all: db-start db-setup run test
 	@echo "✓ Projeto completo!"
