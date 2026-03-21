@@ -32,8 +32,12 @@ help:
 
 setup: .env
 	pip install dbt-postgres
-	@echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.bashrc
-	@source ~/.bashrc
+	@if [ "$(shell uname)" = "Darwin" ]; then \
+		echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.zshrc && \
+		which psql > /dev/null 2>&1 || brew install postgresql@15; \
+	else \
+		echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.bashrc; \
+	fi
 	@mkdir -p ~/.dbt
 	@echo "marketing_case:" > ~/.dbt/profiles.yml
 	@echo "  target: dev" >> ~/.dbt/profiles.yml
@@ -50,7 +54,11 @@ setup: .env
 	@echo "✓ dbt instalado e profiles.yml configurado"
 
 db-start: .env
-	sudo service postgresql start
+	@if [ "$(shell uname)" = "Darwin" ]; then \
+		brew services start postgresql@15 || brew services start postgresql; \
+	else \
+		sudo service postgresql start; \
+	fi
 	@echo "✓ PostgreSQL iniciado"
 
 db-setup: .env
