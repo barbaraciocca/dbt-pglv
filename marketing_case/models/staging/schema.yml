@@ -1,0 +1,60 @@
+version: 2
+
+sources:
+  - name: public
+    tables:
+      - name: raw_facebook_ads
+      - name: raw_google_ads
+      - name: raw_tiktok_ads
+
+models:
+  - name: stg_facebook_ads
+    description: "Dados do Facebook Ads com JSON extraído e padronizado."
+    columns:
+      - name: id
+        description: "Identificador único do registro."
+        tests:
+          - unique
+          - not_null
+      - name: cost
+        description: "Custo da campanha em reais."
+        tests:
+          - not_null
+      - name: date
+        description: "Data da campanha."
+        tests:
+          - not_null
+
+  - name: stg_google_ads
+    description: "Dados do Google Ads com JSON extraído e padronizado."
+    columns:
+      - name: id
+        description: "Identificador único do registro."
+        tests:
+          - unique
+          - not_null
+      - name: cost
+        description: "Custo da campanha em reais."
+        tests:
+          - not_null
+      - name: date
+        description: "Data da campanha."
+        tests:
+          - not_null
+
+  - name: stg_tiktok_ads
+    description: "Dados do TikTok Ads com JSON extraído e padronizado."
+    columns:
+      - name: id
+        description: "Identificador único do registro."
+        tests:
+          - unique
+          - not_null
+      - name: cost
+        description: "Custo da campanha em reais."
+        tests:
+          - not_null
+      - name: date
+        description: "Data da campanha."
+        tests:
+          - not_null

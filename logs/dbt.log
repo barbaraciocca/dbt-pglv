@@ -1,0 +1,31 @@
+[0m14:39:04.458602 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x74d4b2bb0eb0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x74d4b1480610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x74d4b14805b0>]}
+
+
+============================== 14:39:04.462461 | afecaa6b-94c6-4746-8907-9bfb56275312 ==============================
+[0m14:39:04.462461 [info ] [MainThread]: Running with dbt=1.11.7
+[0m14:39:04.463867 [debug] [MainThread]: running dbt with arguments {'invocation_command': 'dbt init marketing_case', 'static_parser': 'True', 'empty': 'None', 'profiles_dir': '/home/coder/.dbt', 'printer_width': '80', 'log_cache_events': 'False', 'log_path': 'logs', 'use_colors': 'True', 'log_format': 'default', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'introspect': 'True', 'target_path': 'None', 'partial_parse': 'True', 'write_json': 'True', 'use_experimental_parser': 'False', 'warn_error': 'None', 'debug': 'False', 'version_check': 'True', 'cache_selected_only': 'False', 'fail_fast': 'False', 'indirect_selection': 'eager', 'quiet': 'False', 'no_print': 'None'}
+[0m14:39:04.474135 [info ] [MainThread]: Creating dbt configuration folder at /home/coder/.dbt
+[0m14:39:04.476627 [debug] [MainThread]: Starter project path: /home/coder/.local/lib/python3.10/site-packages/dbt/include/starter_project
+[0m14:39:04.480399 [info ] [MainThread]: 
+Your new dbt project "marketing_case" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m14:39:04.481812 [info ] [MainThread]: Setting up your profile.
+[0m14:41:21.788550 [info ] [MainThread]: Profile marketing_case written to /home/coder/.dbt/profiles.yml using target's profile_template.yml and your supplied values. Run 'dbt debug' to validate the connection.
+[0m14:41:21.790780 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": true, "command_wall_clock_time": 137.4034, "process_in_blocks": "0", "process_kernel_time": 0.184386, "process_mem_max_rss": "103212", "process_out_blocks": "80", "process_user_time": 1.526367}
+[0m14:41:21.792180 [debug] [MainThread]: Command `dbt init` succeeded at 14:41:21.792067 after 137.40 seconds
+[0m14:41:21.793553 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x74d4b2bb0eb0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x74d4b138b100>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x74d4b14804f0>]}
+[0m14:41:21.794844 [debug] [MainThread]: Flushing usage events
+[0m14:41:22.736314 [debug] [MainThread]: An error was encountered while trying to flush usage events

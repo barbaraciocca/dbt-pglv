@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: dim_campaign
+    description: "Dimensão de campanhas com nome e plataforma de origem."
+    columns:
+      - name: campaign_id
+        description: "Identificador único da campanha."
+        tests:
+          - unique
+          - not_null
+      - name: campaign_name
+        description: "Nome da campanha."
+        tests:
+          - not_null
+      - name: platform
+        description: "Plataforma de origem (facebook, google, tiktok)."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['facebook', 'google', 'tiktok']
+
+  - name: dim_date
+    description: "Dimensão de datas com ano, mês e dia separados."
+    columns:
+      - name: date_day
+        description: "Data completa."
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_campaign_performance
+    description: "Fato de desempenho de campanhas unificando todas as plataformas."
+    columns:
+      - name: performance_id
+        description: "Identificador único do registro de performance."
+        tests:
+          - unique
+          - not_null
+      - name: cost
+        description: "Custo da campanha."
+        tests:
+          - not_null
+      - name: platform
+        description: "Plataforma de origem."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['facebook', 'google', 'tiktok']
