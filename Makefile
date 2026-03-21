@@ -33,8 +33,8 @@ help:
 setup: .env
 	pip install dbt-postgres
 	@if [ "$(shell uname)" = "Darwin" ]; then \
-		echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.zshrc && \
-		which psql > /dev/null 2>&1 || brew install postgresql@15; \
+		which brew > /dev/null 2>&1 || { echo "❌ Homebrew não encontrado. Instale em https://brew.sh"; exit 1; }; \
+		echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.zshrc; \
 	else \
 		echo "export PATH=$$HOME/.local/bin:$$PATH" >> ~/.bashrc; \
 	fi
