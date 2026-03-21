@@ -47,9 +47,11 @@ Extracts fields from the JSON payload, standardizes column names, and casts to t
 ## Getting Started
 
 ### Prerequisites
-- Python 3.10+
-- PostgreSQL 15
-- dbt-postgres 1.10+
+- Python 3.9+
+- Git
+- Homebrew (Mac only) — install at brew.sh
+
+Everything else (PostgreSQL, dbt) is installed automatically by the Makefile.
 
 ### Setup
 
@@ -61,31 +63,32 @@ cd dbt-pglv
 
 **2. Configure your credentials**
 
-The first time you run any `make` command, the Makefile will automatically create a `.env` file from `.env.example` and ask you to fill in your database credentials:
+The first time you run `make all`, the Makefile will automatically create a `.env` file and ask you to fill in your credentials:
 ```bash
 nano .env
 ```
-```bash
-DBT_HOST=localhost
-DBT_PORT=5432
-DBT_USER=postgres
-DBT_PASSWORD=your_password_here
-DBT_DATABASE=postgres
-DBT_SCHEMA=public
-```
+
+| Variable | Mac | Linux |
+|---|---|---|
+| `DBT_HOST` | `localhost` | `localhost` |
+| `DBT_PORT` | `5432` | `5432` |
+| `DBT_USER` | your system username (`whoami`) | `postgres` |
+| `DBT_PASSWORD` | any password of your choice | any password of your choice |
+| `DBT_DATABASE` | `postgres` | `postgres` |
+| `DBT_SCHEMA` | `public` | `public` |
 
 **3. Run everything**
 ```bash
 make all
 ```
 
-That's it! This single command will start PostgreSQL, create the raw tables with sample data, run all dbt models, and run all tests.
+This single command will install dbt, start PostgreSQL, create the raw tables with sample data, run all dbt models, and run all 24 tests.
 
 ---
 
 ## Available commands
 ```bash
-make setup      # install dependencies and configure credentials
+make setup      # install dbt and configure credentials
 make db-start   # start PostgreSQL
 make db-setup   # create raw tables with sample data
 make run        # run all dbt models
